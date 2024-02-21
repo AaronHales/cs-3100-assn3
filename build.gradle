@@ -1,0 +1,35 @@
+plugins {
+    id 'java'   /* Support Java compilation */
+    id 'application'        /* Needed for mainClassName property, also brings in the 'run' task */
+}
+
+sourceCompatibility = '1.8'          /* Sets compatibility with Java 1.8 for both compiling and running your code */
+targetCompatibility = '1.8'
+version = '1.0'                   /* Defines your project's version as '1.0' */
+
+repositories {
+    jcenter()              /* Specifies JCenter as the source for downloading project dependencies */
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']           /*  Tells Gradle your Java source files are located in the src directory  */
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'Assign3'             /*  Configures the JAR file to recognize 'Assign2' as the main class for execution */
+    }
+}
+
+run {   /* Run with: gradle run -PrunArgs='arg1 arg2 arg3' */    /*  Allows passing arguments to your program from the command line when using gradle run  */
+    if (project.hasProperty('runArgs')) {
+        args project.getProperty('runArgs').split()
+    }
+
+}
+
+mainClassName = 'Assign3'       /*  Sets 'Assign2' as the main class to run your application */
