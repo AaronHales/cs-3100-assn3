@@ -21,7 +21,7 @@ sourceSets {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'Assign3'             /*  Configures the JAR file to recognize 'Assign2' as the main class for execution */
+        attributes 'Main-Class': 'Assign3'             /*  Configures the JAR file to recognize 'Assign3' as the main class for execution */
     }
 }
 
@@ -32,4 +32,4 @@ run {   /* Run with: gradle run -PrunArgs='arg1 arg2 arg3' */    /*  Allows pass
 
 }
 
-mainClassName = 'Assign3'       /*  Sets 'Assign2' as the main class to run your application */
+mainClassName = 'Assign3'       /*  Sets 'Assign3' as the main class to run your application */
