@@ -1,4 +1,5 @@
 plugins {
+    id 'java-library'
     id 'java'   /* Support Java compilation */
     id 'application'        /* Needed for mainClassName property, also brings in the 'run' task */
 }
