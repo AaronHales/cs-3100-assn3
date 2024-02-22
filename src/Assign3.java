@@ -4,32 +4,67 @@ import java.util.LinkedList;
 import java.util.Collections;
 
 public class Assign3 {
-    public static void main(String[] args) {
-        int startSize = 1000;
-        TaskQueue taskQueue = new TaskQueue(startSize);
+	
+	/**
+	 * the first function to be called
+	 * @param args the command line args
+	 */
+	public static void main(String[] args) {
+		// the amount of digits of PI to compute
+        int size = 1000;
+
+		// the FIFO queue of digit positions
+        TaskQueue taskQueue = new TaskQueue(size);
+		// the result table of each digit that was computed
         ResultTable resultTable = new ResultTable();
+
+		// gets the number of threads to create, one for each processor
         int numThreads = Runtime.getRuntime().availableProcessors();
+		// creates an array of threads
         Thread[] threads = new Thread[numThreads];
+		// for each thread create a new worker
         for (int i = 0; i < numThreads; i++) {
             threads[i] = new Worker(taskQueue, resultTable);
         }
+
+		// get the start time
         long startTime = System.currentTimeMillis();
+		// for each thread start the task
         for (int i = 0; i < numThreads; i++) {
             threads[i].start();
         }
+
         while(true) {
-            if (taskQueue.isEmpty() && taskQueue.getSize() == 0) {
+			// if the queue is empty
+            if (taskQueue.isEmpty()) {
                 boolean isDone = true;
+
+				// for each thread check if it is done
                 for (int i = 0; i < numThreads; i++) {
+					// if the thread is done and isDone is now isDone
+					// if thread is not done isDone is false
                     isDone = isDone && !threads[i].isAlive();
+
+					// if one thread is not done end for loop
+					if (!isDone) {
+						break;
+					}
                 }
+
+				// if all done break while loop
                 if (isDone) {
                     break;
                 }
             }
         }
+
+		// get the time it took to run
         long runTime = System.currentTimeMillis() - startTime;
-        resultTable.displayResult();
+
+		// print the function to resturns the resultTable
+        System.out.println(resultTable.displayResult());
+
+		// display how long it took to compute
         System.out.printf("Pi Computation took %d ms\n", runTime);
 
     }
@@ -201,12 +236,12 @@ class ResultTable {
         }
     }
 
-    public void displayResult() {
-        System.out.print("3.");
+    public String displayResult() {
+		String resultString = "3.";
         for (int i = 1; i <= this.results.size(); i++) {
-            System.out.printf("%d", this.results.get(i));
+            resultString = resultString.concat(Integer.toString(this.results.get(i)));
         }
-        System.out.println();
+        return resultString;
     }
 
 }
