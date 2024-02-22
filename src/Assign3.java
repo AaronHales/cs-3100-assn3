@@ -327,50 +327,95 @@ class ResultTable {
 }
 
 /**
+ * @author Aaron Hales
  * 
+ * the TaskQueu Class
  */
 class TaskQueue {
+	// the FIFO queue
     private LinkedList<Integer> queue = new LinkedList<>();
+	// the size of the queue
     private int startSize;
 
-    public TaskQueue(int size) {
+	/**
+	 * @author Aaron Hales
+	 * 
+	 * the constructor for TaskQueue
+	 * @param size the size of the desired queue
+	 */
+    TaskQueue(int size) {
+		// stores the size in startSize
         this.startSize = size;
+
+		// creates an ArrayList for digits
         ArrayList<Integer> digits = new ArrayList<>();
+		
+		// from 1-size
         for (int i = 1; i <= size; i++) {
+			// adds the value of "i" to the ArrayList
             digits.add(i);
         }
+
+		// shuffles the ArrayList so it is in random order
         Collections.shuffle(digits);
+
+		// for each digit in the ArrayList
         for (int digit : digits) {
+			// add the digit to the queue
             this.queue.add(digit);
         }
     }
 
+	/**
+	 * @author Aaron Hales
+	 * 
+	 * returns if the queue is empty
+	 * @return if queue is empty return true else return false
+	 */
     public boolean isEmpty() {
+		// allows one task to access this
         synchronized (this.queue) {
+			// return if queue is empty
             return this.queue.size() == 0;
         }
     }
 
-    public int getSize() {
-        synchronized (this.queue) {
-            return this.queue.size();
-        }
-    }
-
+	/**
+	 * @author Aaron Hales
+	 * 
+	 * returns the top digit on the queue
+	 * @return the top digit in the queue
+	 */
     public int getFirst() {
+		// allows one task to access this
         synchronized (this.queue) {
+			// gets the first digit from the queue
             int digit = this.queue.remove();
+
             displayStatus();
+
+			// returns the digit
             return digit;
         }
     }
 
+	/**
+	 * @author Aaron Hales
+	 * 
+	 * displays the current status of the queue after each item is removed
+	 */
     private void displayStatus() {
+		// if the amount done so far (startSize - current size) mod 10 is 0
         if ((this.startSize - this.queue.size()) % 10 == 0) {
             System.out.print(". ");
+
+			// if the amount done so far (startSize - current size) mod 100 is 0
             if ((this.startSize - this.queue.size()) % 100 == 0) {
+				// print a new line
                 System.out.println();
             }
+			
+			// makes sure it is displayed
             System.out.flush();
         }
     }
