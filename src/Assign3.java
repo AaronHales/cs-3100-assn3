@@ -3,9 +3,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Collections;
 
+/**
+ * @author Aaron Hales
+ */
 public class Assign3 {
 	
 	/**
+	 * @author Aaron Hales
+	 * 
 	 * the first function to be called
 	 * @param args the command line args
 	 */
@@ -24,6 +29,7 @@ public class Assign3 {
         Thread[] threads = new Thread[numThreads];
 		// for each thread create a new worker
         for (int i = 0; i < numThreads; i++) {
+			// passes a reference to taskQueue and resultTable to each thread
             threads[i] = new Worker(taskQueue, resultTable);
         }
 
@@ -70,24 +76,51 @@ public class Assign3 {
     }
 }
 
+/**
+ * The class for tasks extends threads
+ */
 class Worker extends Thread{
 
+	// the reference to the TaskQueue
     private TaskQueue queue;
+	// the reference to ResultTable
     private ResultTable result;
 
+	/**
+	 * @author Aaron Hales
+	 * 
+	 * The constructor to Worker, saves the references in a private var
+	 * @param queue the reference to the TaskQueue
+	 * @param result the reference to ResultTable
+	 */
     Worker(TaskQueue queue, ResultTable result) {
-        System.out.flush();
         this.queue = queue;
         this.result = result;
     }
 
+	/**
+	 * @author Aaron Hales
+	 * 
+	 * the run function for the worker thread, overrides the default run for Threads
+	 */
+	@Override
     public void run() {
+		// while the queue is not empty
         while (!this.queue.isEmpty()) {
+			// get the first digit on the queue
             int topDigit = this.queue.getFirst();
+			// add the result of the digit at the first position on the queue to the resultTable
             this.result.addItem(topDigit, calculate((long)topDigit));
         }
     }
 
+	/**
+	 * @author Craig Felton (https://github.com/feltocraig)
+	 * 
+	 * Gotten from https://github.com/feltocraig/BBP-Bellard
+	 * @param digit the position of the digit of pi to calculate
+	 * @return the number that the position of digit
+	 */
     int calculate(long digit) {
         long av, a, vmax, N, num, den, k, kq, kq2, t, v, s, i;
 		double sum;
@@ -153,13 +186,19 @@ class Worker extends Thread{
 			s = mulMod(s, t, av);
 			sum = (sum + (double) s / (double) av) % 1;
 		}
-		return (int) (sum * 1e1); // 1e9 is 9 decimal places
+		return (int) (sum * 1e1); // 1e1 is 1 decimal places
     }
 
+	/**
+	 * @author Craig Felton (https://github.com/feltocraig)
+	 */
     private long mulMod(long a, long b, long m) {
 		return (long) (a * b) % m;
 	}
 
+	/**
+	 * @author Craig Felton (https://github.com/feltocraig)
+	 */
 	private long modInverse(long a, long n) {
 		long i = n, v = 0, d = 1;
 		while (a > 0) {
@@ -176,6 +215,9 @@ class Worker extends Thread{
 		return v;
 	}
 
+	/**
+	 * @author Craig Felton (https://github.com/feltocraig)
+	 */
 	private long powMod(long a, long b, long m) {
 		long tempo;
 		if (b == 0)
@@ -193,6 +235,9 @@ class Worker extends Thread{
 		return tempo;
 	}
 
+	/**
+	 * @author Craig Felton (https://github.com/feltocraig)
+	 */
 	private boolean isPrime(long n) {
 		if (n == 2 || n == 3)
 			return true;
@@ -210,6 +255,9 @@ class Worker extends Thread{
 		return true;
 	}
 
+	/**
+	 * @author Craig Felton (https://github.com/feltocraig)
+	 */
 	private long nextPrime(long n) {
 		if (n < 2)
 			return 2;
@@ -223,29 +271,64 @@ class Worker extends Thread{
 	}
 }
 
+/**
+ * @author Aaron Hales
+ * 
+ * ResultTable Class
+ */
 class ResultTable {
+	// a HashMap for results where the digit position is the key
     private HashMap<Integer, Integer> results;
 
+	/**
+	 * @author Aaron Hales
+	 * 
+	 * the default constructor, creates the HashMap
+	 */
     ResultTable() {
         this.results = new HashMap<>();
     }
 
+	/**
+	 * @author Aaron Hales
+	 * 
+	 * adds an digit to the HashMap with the key of digit and value of num
+	 * @param digit the key to put the num
+	 * @param num the value of the key of digit
+	 */
     public void addItem(int digit, int num) {
+		// allows on thing to access at a time.
         synchronized (this.results) {
+			// put the value num with the key of digit
             this.results.put(digit, num);
         }
     }
 
+	/**
+	 * @author Aaron Hales
+	 * 
+	 * returns the values in the HashMap from the key 1 to the key of the size of the HashMap
+	 * @return the string of each value in the HashMap with the key starting at 1 and going to the size of the HashMap
+	 */
     public String displayResult() {
+		// add 3. to the string
 		String resultString = "3.";
+
+		// for each key in the HashMap starting at 1 to the size
         for (int i = 1; i <= this.results.size(); i++) {
+			// add the value of the key 'i' to the string
             resultString = resultString.concat(Integer.toString(this.results.get(i)));
         }
+
+		// returns the final string
         return resultString;
     }
 
 }
 
+/**
+ * 
+ */
 class TaskQueue {
     private LinkedList<Integer> queue = new LinkedList<>();
     private int startSize;
